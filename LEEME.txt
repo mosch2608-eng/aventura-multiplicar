@@ -1,0 +1,27 @@
+AVENTURA DE MULTIPLICAR — PWA
+
+Contenido:
+- index.html: juego
+- manifest.json: configuración para instalar como app
+- sw.js: funcionamiento offline después de la primera carga
+- icon-192.svg / icon-512.svg: iconos genéricos
+
+PUBLICAR GRATIS CON GITHUB PAGES
+1. Crea una cuenta en GitHub si no tienes una.
+2. Crea un repositorio nuevo, por ejemplo: aventura-multiplicar.
+3. Sube TODOS los archivos de esta carpeta a la raíz del repositorio.
+4. Abre Settings > Pages.
+5. En Build and deployment elige: Deploy from a branch.
+6. Branch: main y carpeta /(root). Guarda.
+7. GitHub mostrará la dirección pública de la app.
+
+INSTALAR EN IPAD
+1. Abre la dirección publicada usando Safari.
+2. Toca Compartir.
+3. Toca “Agregar a pantalla de inicio”.
+4. Confirma “Agregar”.
+5. Abre “Multiplicar” desde el icono.
+
+Privacidad:
+No contiene fotos, apellido, escuela, ubicación ni otros datos personales.
+El historial de partidas se guarda localmente en el navegador del dispositivo.

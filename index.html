@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6750A4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Multiplicar">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.svg">
+  <title>Aventura de Multiplicar</title>
+  <style>
+    :root{--bg:#f6f4ff;--card:#fff;--ink:#262238;--muted:#6f6980;--accent:#6750a4;--accent2:#8b72cc;--good:#2e7d32;--warn:#ef8c00;--bad:#c62828}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-rounded,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f8f6ff,#eef7ff);color:var(--ink);min-height:100vh}
+    button,input{font:inherit}
+    .wrap{max-width:760px;margin:auto;padding:22px 16px 42px}
+    .hero{text-align:center;padding:10px 0 16px}
+    .mascot{font-size:64px;line-height:1;margin:6px}
+    h1{font-size:clamp(30px,6vw,48px);margin:6px 0}.sub{color:var(--muted);font-size:17px}
+    .card{background:var(--card);border:1px solid #e7e1f5;border-radius:24px;padding:22px;margin:14px 0;box-shadow:0 8px 30px rgba(62,49,102,.08)}
+    .tables{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
+    .tbtn{min-height:54px;border:2px solid #ddd6ef;background:white;border-radius:15px;font-weight:800;font-size:20px;color:var(--ink)}
+    .tbtn.on{background:#ece6ff;border-color:var(--accent);color:var(--accent)}
+    .primary,.secondary{border:0;border-radius:16px;min-height:54px;padding:0 20px;font-weight:800;font-size:17px;cursor:pointer}
+    .primary{background:var(--accent);color:white;width:100%}.secondary{background:#eeeaf7;color:var(--ink)}
+    .primary:disabled{opacity:.45}
+    .topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-weight:700}
+    .question{text-align:center;font-size:clamp(54px,14vw,92px);font-weight:900;letter-spacing:-3px;margin:24px 0 12px}
+    .answer{display:block;width:min(280px,100%);margin:0 auto 14px;border:3px solid #d8d0eb;border-radius:18px;padding:14px;text-align:center;font-size:36px;font-weight:900;outline:none}
+    .answer:focus{border-color:var(--accent);box-shadow:0 0 0 4px #ece6ff}
+    .feedback{text-align:center;min-height:32px;font-size:20px;font-weight:800}
+    .progress{height:12px;background:#eeeaf7;border-radius:99px;overflow:hidden;margin-top:16px}.bar{height:100%;background:var(--accent2);width:0;transition:width .25s}
+    .result{text-align:center}.score{font-size:64px;font-weight:900;margin:8px}.stars{font-size:34px;letter-spacing:5px}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}.stat{background:#f7f5fc;border-radius:16px;padding:14px}.stat b{display:block;font-size:28px}
+    .history{margin-top:12px;font-size:14px;color:var(--muted)}
+    .hidden{display:none!important}
+    .small{font-size:13px;color:var(--muted);text-align:center;margin-top:12px}
+    @media(max-width:430px){.tables{grid-template-columns:repeat(5,1fr);gap:7px}.tbtn{min-height:48px;font-size:18px}.card{padding:17px}.question{margin-top:18px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <section id="home">
+    <div class="hero"><div class="mascot">🦊</div><h1>Aventura de Multiplicar</h1><div class="sub">Elige tus tablas y supera el reto.</div></div>
+    <div class="card">
+      <strong>¿Qué tablas quieres practicar?</strong>
+      <div class="tables" id="tables"></div>
+      <button class="primary" id="start" disabled>Comenzar aventura</button>
+      <div class="small">10 preguntas por partida · Tu progreso se guarda solamente en este dispositivo.</div>
+    </div>
+    <div class="card">
+      <strong>Mi progreso</strong>
+      <div class="history" id="history">Todavía no hay partidas guardadas.</div>
+    </div>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="card">
+      <div class="topbar"><span id="counter">Pregunta 1 de 10</span><span id="points">⭐ 0</span></div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="question" id="question">2 × 3</div>
+      <form id="form">
+        <input id="answer" class="answer" type="number" inputmode="numeric" autocomplete="off" aria-label="Respuesta">
+        <button class="primary" type="submit">Responder</button>
+      </form>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="result" class="hidden">
+    <div class="card result">
+      <div class="mascot" id="resultMascot">🎉</div>
+      <h2 id="resultTitle">¡Excelente!</h2>
+      <div class="score" id="score">10/10</div>
+      <div class="stars" id="stars">⭐⭐⭐</div>
+      <p id="resultText"></p>
+      <div class="stats"><div class="stat"><b id="correct">0</b>Correctas</div><div class="stat"><b id="accuracy">0%</b>Precisión</div></div>
+      <button class="primary" id="again">Jugar otra vez</button>
+    </div>
+  </section>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id), selected=new Set();
+ const tableBox=$("tables"), start=$("start"), home=$("home"), game=$("game"), result=$("result");
+ let qs=[],idx=0,ok=0,locked=false;
+ for(let n=1;n<=10;n++){const b=document.createElement("button");b.type="button";b.className="tbtn";b.textContent=n;b.addEventListener("click",()=>{selected.has(n)?selected.delete(n):selected.add(n);b.classList.toggle("on");start.disabled=!selected.size});tableBox.appendChild(b)}
+ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+ function beep(good=true){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const c=new A(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=good?660:220;g.gain.value=.08;o.start();setTimeout(()=>{o.stop();c.close()},good?120:220)}catch(e){}}
+ function build(){let pool=[];[...selected].forEach(a=>{for(let b=1;b<=10;b++)pool.push({a,b,ans:a*b})});shuffle(pool);qs=pool.slice(0,10);while(qs.length<10){let a=[...selected][Math.floor(Math.random()*selected.size)],b=1+Math.floor(Math.random()*10);qs.push({a,b,ans:a*b})}}
+ function showQ(){locked=false;const q=qs[idx];$("counter").textContent=`Pregunta ${idx+1} de 10`;$("points").textContent=`⭐ ${ok}`;$("bar").style.width=`${idx*10}%`;$("question").textContent=`${q.a} × ${q.b}`;$("answer").value="";$("feedback").textContent="";requestAnimationFrame(()=>$("answer").focus())}
+ start.addEventListener("click",()=>{build();idx=0;ok=0;home.classList.add("hidden");result.classList.add("hidden");game.classList.remove("hidden");showQ()});
+ $("form").addEventListener("submit",e=>{e.preventDefault();if(locked)return;const val=$("answer").value.trim();if(val===""){ $("feedback").textContent="Escribe una respuesta 🙂";$("answer").focus();return}locked=true;const good=Number(val)===qs[idx].ans;if(good){ok++;$("feedback").textContent="¡Correcto! 🌟";$("feedback").style.color="var(--good)";beep(true)}else{$("feedback").textContent=`Casi. Era ${qs[idx].ans} 💪`;$("feedback").style.color="var(--bad)";beep(false)}
+   setTimeout(()=>{idx++; if(idx>=10)finish(); else showQ()},650)
+ });
+ function finish(){game.classList.add("hidden");result.classList.remove("hidden");$("bar").style.width="100%";const pct=ok*10;$("score").textContent=`${ok}/10`;$("correct").textContent=ok;$("accuracy").textContent=pct+"%";
+   let title,text,face,stars;if(ok>=9){title="¡Increíble!";text="¡Dominaste el reto! Sigue así.";face="🦊✨";stars="⭐⭐⭐"}else if(ok>=7){title="¡Muy bien!";text="Vas muy bien. Una ronda más te hará aún más rápida.";face="🦊😊";stars="⭐⭐⭐"}else if(ok>=5){title="¡Buen esfuerzo!";text="Ya hay avance. Practiquemos otra vez estas tablas.";face="🦊🙂";stars="⭐⭐"}else{title="¡A practicar!";text="Cada intento cuenta. Vamos por otra ronda.";face="🦊💪";stars="⭐"}
+   $("resultTitle").textContent=title;$("resultText").textContent=text;$("resultMascot").textContent=face;$("stars").textContent=stars;
+   try{const h=JSON.parse(localStorage.getItem("multiplicarHist")||"[]");h.unshift({date:new Date().toLocaleDateString("es-MX"),score:ok,tables:[...selected]});localStorage.setItem("multiplicarHist",JSON.stringify(h.slice(0,20)))}catch(e){} renderHistory()
+ }
+ $("again").addEventListener("click",()=>{result.classList.add("hidden");home.classList.remove("hidden");renderHistory()});
+ function renderHistory(){try{const h=JSON.parse(localStorage.getItem("multiplicarHist")||"[]");$("history").innerHTML=h.length?h.slice(0,5).map(x=>`<div>📘 ${x.date} · Tablas ${x.tables.join(", ")} · <b>${x.score}/10</b></div>`).join(""):"Todavía no hay partidas guardadas."}catch(e){}}
+ renderHistory();
+ if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>
